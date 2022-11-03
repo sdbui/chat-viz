@@ -11,13 +11,15 @@ const MessageType = {
 const socket = io('http://localhost:4000')
 
 function Room() {
-    // state variables
     const [messages, setMessages] = useState([]);
     const messagesRef = useRef(messages); // NOTES: 1
     const messagesListRef = useRef(); // NOTES: 2
 
+    const [chatPause, setChatPause] = useState(false);
+    const chatPauseRef = useRef(chatPause);
+
     const [messageType, setMessageType] = useState(MessageType.Text);
-    const textAreaRef = useRef();
+    const inputRef = useRef();
 
     useEffect(() => {
         socket.on('connect', ()=> {
@@ -31,16 +33,19 @@ function Room() {
     },[])
     useEffect(() => { // NOTES: 1, 2
         messagesRef.current = messages;
-        // always stay scrolled to bottom of messages
-        messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
-    },[messages])
+        chatPauseRef.current = chatPause;
+        // stay scrolled to bottom of messages unless chatPause is active
+        if (!chatPauseRef.current) {
+            messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
+        }
+    },[messages, chatPause])
 
     // methods 
     function sendMessage() {
-        const currentText = textAreaRef.current.value;
+        const currentText = inputRef.current.value;
         if (currentText) {
             socket.emit('message-send', currentText);
-            textAreaRef.current.value = '';
+            inputRef.current.value = '';
         }
     }
     function handleKeyDown(e) {
@@ -50,18 +55,34 @@ function Room() {
             sendMessage();
         }
     }
+    function handleScroll(e) {
+        let scrollHeight = messagesListRef.current.scrollHeight; // total height of list plus scroll
+        let clientHeight = messagesListRef.current.clientHeight; // height of list
+        let scrollTop = messagesListRef.current.scrollTop; // how much is actually scrolled
+
+        if (scrollHeight - (clientHeight + scrollTop) > 200) {
+            // if we have scrolled up higher than 200 px, pause the auto scroll-to-bottom mechanic
+            setChatPause(true);
+        }
+    }
 
     return (
         <div className="room-container">
             <div className="room">
                 <div className="messages">
-                    <ul ref={messagesListRef}>
+                    <ul ref={messagesListRef}
+                        onScroll={handleScroll}>
                         {messages.map((msg, idx) =>(
                             <li key={idx}>
                                 {msg}
                             </li>
                         ))}
                     </ul>
+                    {chatPause && (
+                        <div className="pause-notification">
+                            <span onClick={() => setChatPause(false)}>Chat paused due to scroll. Click to unpause</span>
+                        </div>
+                        )}
                 </div>
                 <div className="participants">
                     list of participants here...
@@ -75,10 +96,10 @@ function Room() {
             <div className="message-input">
                 {messageType === MessageType.Text && (
                     <>
-                        <textarea ref={textAreaRef}
+                        <input ref={inputRef}
                             onKeyDown={handleKeyDown}
                             placeholder="insert your message here"
-                        ></textarea>
+                        ></input>
                         <button onClick={sendMessage}>send</button>
                     </>
                 )}

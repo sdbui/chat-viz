@@ -11,7 +11,7 @@
     display: flex;
     flex-grow: 1;
     width: 100vw;
-    background: blue;
+    background: #ccc;
 }
 
 
@@ -26,12 +26,28 @@
     margin: 0;
     padding: 0;
     list-style-type: none;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 .messages li {
     padding: 10px;
 
+}
+.messages .pause-notification {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.messages .pause-notification span {
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 15px 1px rgba(100,100,100, 1);
+    background: #eee;
+    cursor: pointer;
 }
 
 .participants {
@@ -42,12 +58,15 @@
 
 .message-input {
     position: relative;
-    min-height: 125px;
+    min-height: 50px;
     display: flex;
 }
-.message-input textarea {
-    flex-grow: 1;
+.message-input input {
+    padding: 0 20px;
+    width: 100%;
 }
 .message-input button {
+    cursor: pointer;
     min-width: 100px;
+    background: cyan;
 }
