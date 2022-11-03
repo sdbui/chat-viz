@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 // our views
 import Room from './views/room';
+import Scene from './views/scene';
 
 const router = createBrowserRouter([
   {
@@ -11,7 +12,7 @@ const router = createBrowserRouter([
   },
   {
     path: 'scene',
-    element: (<>the scene</>)
+    element: <Scene />
   }
 ])
 
