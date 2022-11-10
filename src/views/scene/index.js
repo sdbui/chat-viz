@@ -1,7 +1,10 @@
 import './styles.css';
 import { useRef, useLayoutEffect } from 'react';
 import { io } from 'socket.io-client';
-import * as d3 from 'd3';
+import { select } from 'd3-selection';
+import { interpolate } from 'd3-interpolate';
+import { easeLinear } from 'd3-ease';
+import 'd3-transition'; // had to import this to get module import of easing working...
 
 const socket = io('http://localhost:4000')
 
@@ -23,7 +26,7 @@ function Scene() {
 
 
         socket.on('message-add', (msg) => {
-            const svg = d3.select(svgRef.current);
+            const svg = select(svgRef.current);
 
             // create a node add to svg and animate
             let path = getRandomPath(paths).current;
@@ -36,16 +39,16 @@ function Scene() {
                 .transition()
                 .delay(250)
                 .duration(1500)
-                .ease(d3.easeLinear)
+                .ease(easeLinear)
                 .tween('pathTween', function (){ return pathTween(path)})
                 .remove();
             
                 function pathTween(path) {
                     let length = path.getTotalLength();
-                    let r = d3.interpolate(0,length); // set up interpolation from 0 to path length
+                    let r = interpolate(0,length); // set up interpolation from 0 to path length
                     return function(t) {
                         let point = path.getPointAtLength(r(t)); // get th enext point along the path
-                        d3.select(this) // select circle
+                        select(this) // select circle
                             .attr('cx', point.x) // update cx
                             .attr('cy', point.y) // update cy
                     }
