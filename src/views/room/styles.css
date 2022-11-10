@@ -1,0 +1,72 @@
+.room-container {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.room {
+    display: flex;
+    flex-grow: 1;
+    width: 100vw;
+    background: #ccc;
+}
+
+
+.messages {
+    flex-grow: 1;
+    position: relative;
+}
+.messages ul {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.messages li {
+    padding: 10px;
+
+}
+.messages .pause-notification {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.messages .pause-notification span {
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 15px 1px rgba(100,100,100, 1);
+    background: #eee;
+    cursor: pointer;
+}
+
+.participants {
+    flex-shrink: 0;
+    width: 240px;
+    background: #ddd;
+}
+
+.message-input {
+    position: relative;
+    min-height: 50px;
+    display: flex;
+}
+.message-input input {
+    padding: 0 20px;
+    width: 100%;
+}
+.message-input button {
+    cursor: pointer;
+    min-width: 100px;
+    background: cyan;
+}
